@@ -1,0 +1,21 @@
+# Claude Code local memory
+.claude/
+
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Data files (local copies — do not commit large/sensitive data)
+*.csv
+*.parquet
+*.json
+
+# OS
+.DS_Store
