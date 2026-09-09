@@ -2,21 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../opas-ai-skills"
-		},
-		{
-			"path": "../orbis-addressing-opas-configuration"
-		},
-		{
-			"path": "../scrapy-poi"
-		},
-		{
-			"path": "../orbis-addressing-apa-improvement-solution"
-		},
-		{
-			"path": "../orbis-addressing-apa-improvement"
 		}
 	],
 	"settings": {}
