@@ -21,7 +21,7 @@ use `%run ./00_config_and_helpers`.
 | `01_investigation` | no (writes audit tables only) | Table inventory, VACUUM overhead, shallow-clone check, log destinations, writer jobs, before-cost baseline, cleanup candidates. About 10–30 min |
 | `01a_dbfs_scan` | no (writes audit tables only) | Size of every `dbfs:/` directory. Sizing runs on the executors in saved batches, within a time budget (`time_budget_min`). Resume an unfinished run with `resume_run_id`. Can run alongside `01` |
 | `04_cost_report` | no | Reads the latest `01` and `01a` audit runs and turns them into $/month: non-overlapping cost buckets, most expensive directories, databases and tables with a suggested action, and a Markdown summary for the ticket. 1–2 min |
-| `02_cleanup` | **yes, one step per run, dry run by default** | `vacuum_dry_run`, `vacuum`, `set_retention_properties`, `drop_tables`, `delete_orphan_dirs`, `prune_cluster_logs` |
+| `02_cleanup` | **yes, one step per run, dry run by default** | `vacuum_dry_run`, `vacuum`, `set_retention_properties`, `drop_tables`, `drop_databases`, `delete_orphan_dirs`, `prune_cluster_logs` |
 | `03_weekly_vacuum_job` | yes, once scheduled | Weekly VACUUM of active root tables. Fails the run when disk is still more than 2× live size. The job JSON is in the last cell |
 
 Suggested flow:
@@ -29,7 +29,7 @@ Suggested flow:
 1. Run `01_investigation`, and `01a_dbfs_scan` alongside it on a second cluster. Resume `01a` until coverage reaches 100%.
 2. Run `04_cost_report` to see what costs money, then review it (and `01` sections 2 and 7) with the table owners.
 3. In `02_cleanup`, run `vacuum_dry_run`, then `vacuum` in small batches.
-4. Drop the tables the owners confirmed.
+4. Drop the tables and databases the owners confirmed (`drop_tables`, `drop_databases`).
 5. Schedule `03_weekly_vacuum_job`.
 6. Run `01_investigation` again and compare `baseline` before and after.
 
