@@ -23,7 +23,6 @@ use `%run ./00_config_and_helpers`.
 | `04_cost_report` | no | Reads the latest `01` and `01a` audit runs and turns them into $/month: non-overlapping cost buckets, most expensive directories, databases and tables with a suggested action, and a Markdown summary for the ticket. 1–2 min |
 | `02_cleanup` | **yes, one step per run, dry run by default** | `vacuum_dry_run`, `vacuum`, `set_retention_properties`, `drop_tables`, `drop_databases`, `delete_orphan_dirs`, `prune_cluster_logs` |
 | `03_weekly_vacuum_job` | yes, once scheduled | Weekly VACUUM of active root tables. Fails the run when disk is still more than 2× live size. The job JSON is in the last cell |
-| `05_savings_report` | no | Before vs after the cleanup: storage cleared and $/month and $/year saved, for table storage and for file storage (`dbfs:/` folders), with file counts. Takes the before/after runs automatically from the cleanup dates. 1–2 min |
 
 Suggested flow:
 
@@ -32,8 +31,7 @@ Suggested flow:
 3. In `02_cleanup`, run `vacuum_dry_run`, then `vacuum` in small batches.
 4. Drop the tables and databases the owners confirmed (`drop_tables`, `drop_databases`).
 5. Schedule `03_weekly_vacuum_job`.
-6. Run `01_investigation` and `01a_dbfs_scan` again, then `05_savings_report` for what was cleared and saved.
-   Enter the account size from the Azure portal in its `azure_now_tib` widget for the real figure.
+6. Run `01_investigation` again and compare `baseline` before and after.
 
 ## Safety built in
 
