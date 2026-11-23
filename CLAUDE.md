@@ -56,4 +56,4 @@ Notebooks follow a consistent pipeline pattern:
 | `find-check-fail-apt-in-pre-opas.ipynb` | APTs that failed pre-OPAS checks |
 | `Load-changelets-to-catalog.ipynb` | Ingests changelet data into Databricks catalog |
 | `unmount-and-mount-again.ipynb` | Manages DBFS mount points |
-| `dbfs-storage-cleanup-SEACO-6161/` | DBFS root storage investigation, cleanup and weekly VACUUM job; one folder per prod workspace (`opas-prod/`, `arc-prod/`), see its README |
+| `dbfs-storage-cleanup-SEACO-6161/` | DBFS root storage investigation, cleanup and monthly VACUUM job; one folder per prod workspace (`opas-prod/`, `arc-prod/`), see its README |

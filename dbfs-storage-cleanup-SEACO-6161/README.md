@@ -22,8 +22,9 @@ use `%run ./00_config_and_helpers`.
 | `01a_dbfs_scan` | no (writes audit tables only) | Size of every `dbfs:/` directory. Sizing runs on the executors in saved batches, within a time budget (`time_budget_min`). Resume an unfinished run with `resume_run_id`. Can run alongside `01` |
 | `04_cost_report` | no | Reads the latest `01` and `01a` audit runs and turns them into $/month: non-overlapping cost buckets, most expensive directories, databases and tables with a suggested action, and a Markdown summary for the ticket. 1–2 min |
 | `02_cleanup` | **yes, one step per run, dry run by default** | `vacuum_dry_run`, `vacuum`, `set_retention_properties`, `drop_tables`, `drop_databases`, `delete_orphan_dirs`, `prune_cluster_logs` |
-| `03_weekly_vacuum_job` | yes, once scheduled | Weekly VACUUM of active root tables. Fails the run when disk is still more than 2× live size. The job JSON is in the last cell |
+| `03_monthly_vacuum_job` | only when re-run with `dry_run = false` | Monthly VACUUM (last day of the month) of root tables written in the last 35 days. The scheduled run is a **dry run**. After an engineer checks it, they re-run the job with `dry_run = false`. The real run fails when disk is still more than 2× live size. The job JSON is in the last cell |
 | `table_counts` (folder root, not per workspace) | no | Standalone (no `%run`), import into either workspace. For each table in the chosen databases (`databases`, empty = all): database, type, format, row count, live size (`DESCRIBE DETAIL`, excludes old versions) and file count, plus totals per database. `scan_files = true` counts by reading the data files, useful before and after a VACUUM |
+| `vacuum_cleanup` (folder root, not per workspace) | **yes, when `dry_run = false`** (dry run by default) | Generic VACUUM for the workspace it runs in, with no config and no `%run`. It lists every database and table with row count, live size, on-disk size and old-version overhead, skips shallow-clone sources, and VACUUMs the largest candidates. For each table it prints rows, size and files before and after, and it stops if the row count changes. The summary shows the GiB freed (estimated in a dry run) and how many databases and tables were freed. A real run needs `confirm_workspace` = the workspace URL |
 
 Suggested flow:
 
@@ -31,7 +32,7 @@ Suggested flow:
 2. Run `04_cost_report` to see what costs money, then review it (and `01` sections 2 and 7) with the table owners.
 3. In `02_cleanup`, run `vacuum_dry_run`, then `vacuum` in small batches.
 4. Drop the tables and databases the owners confirmed (`drop_tables`, `drop_databases`).
-5. Schedule `03_weekly_vacuum_job`.
+5. Schedule `03_monthly_vacuum_job`. Each scheduled run is a dry run. Check its output, then re-run it with `dry_run = false`.
 6. Run `01_investigation` again and compare `baseline` before and after.
 
 ## Safety built in
