@@ -37,6 +37,9 @@ Suggested flow:
 
 - Nothing in `02_cleanup` acts unless `dry_run = false` **and** `confirm_workspace` is exactly the workspace name.
 - VACUUM never goes below 168 hours. It stops if `retentionDurationCheck` has been disabled.
+- Every real VACUUM counts the table's rows before and after, on the same table version and by reading the data
+  files (not the Delta statistics). If the counts differ or the table cannot be read, the step stops and logs
+  `row_check_failed`.
 - **Shallow-clone sources are never VACUUMed.** If a "backup" is a `SHALLOW CLONE`, a VACUUM on its source would break it.
   `01_investigation` section 3 finds these from the Delta file lists.
 - A table written in the last 30 days is not dropped unless you set `allow_recent = true`.
