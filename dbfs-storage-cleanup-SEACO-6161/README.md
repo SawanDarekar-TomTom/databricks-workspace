@@ -23,6 +23,7 @@ use `%run ./00_config_and_helpers`.
 | `04_cost_report` | no | Reads the latest `01` and `01a` audit runs and turns them into $/month: non-overlapping cost buckets, most expensive directories, databases and tables with a suggested action, and a Markdown summary for the ticket. 1–2 min |
 | `02_cleanup` | **yes, one step per run, dry run by default** | `vacuum_dry_run`, `vacuum`, `set_retention_properties`, `drop_tables`, `drop_databases`, `delete_orphan_dirs`, `prune_cluster_logs` |
 | `03_weekly_vacuum_job` | yes, once scheduled | Weekly VACUUM of active root tables. Fails the run when disk is still more than 2× live size. The job JSON is in the last cell |
+| `table_counts` (folder root, not per workspace) | no | Standalone (no `%run`), import into either workspace. For each table in the chosen databases (`databases`, empty = all): database, type, format, row count, live size (`DESCRIBE DETAIL`, excludes old versions) and file count, plus totals per database. `scan_files = true` counts by reading the data files, useful before and after a VACUUM |
 
 Suggested flow:
 
